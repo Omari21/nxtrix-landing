@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - NXTRIX CRM</title>
+    
+    <!-- Configuration for environment-aware URLs -->
+    <script>
+        // Inline configuration to avoid loading issues
+        window.NXTRIX_CONFIG = {
+            getApiUrl: function(endpoint = '') {
+                return 'https://nxtrix-api-production.up.railway.app' + endpoint;
+            },
+            getCrmUrl: function() {
+                return 'http://localhost:8502';
+            },
+            getFrontendUrl: function() {
+                return 'https://nxtrix.netlify.app';
+            }
+        };
+    </script>
+    
+    <style>
+        :root {
+            --brand: #7C5CFF;
+            --brand-2: #9F7AFF;
+            --bg: #0A0A0B;
+            --surface: #1A1A1B;
+            --border: #2A2A2B;
+            --text: #FFFFFF;
+            --muted: #A1A1AA;
+            --success: #10B981;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            text-align: center;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: var(--success);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            color: var(--success);
+        }
+
+        .message {
+            color: var(--muted);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .trial-info {
+            background: rgba(124, 92, 255, 0.1);
+            border: 1px solid rgba(124, 92, 255, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .trial-info h3 {
+            color: var(--brand);
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin: 0 10px;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(124, 92, 255, 0.4);
+        }
+
+        .btn.secondary {
+            background: var(--surface);
+            border: 2px solid var(--border);
+        }
+
+        .btn.secondary:hover {
+            border-color: var(--brand);
+            background: rgba(124, 92, 255, 0.1);
+        }
+
+        .next-steps {
+            text-align: left;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+        }
+
+        .next-steps ul {
+            color: var(--muted);
+            padding-left: 20px;
+        }
+
+        .next-steps li {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon">✅</div>
+        <h1 id="successTitle">Payment Successful!</h1>
+        <p class="message" id="successMessage">
+            Welcome to NXTRIX CRM! Your subscription is now active and your 7-day free trial has begun.
+        </p>
+
+        <div class="trial-info" id="trialInfo">
+            <h3>🎯 Your 7-Day Free Trial</h3>
+            <p>You have full access to all features during your trial period. No charges until your trial ends.</p>
+        </div>
+
+        <!-- Founders Success Message -->
+        <div class="trial-info" id="foundersInfo" style="display: none; background: linear-gradient(135deg, #10B981, #059669); color: #fff;">
+            <h3>🚀 Founders Spot Reserved!</h3>
+            <p><strong>NO PAYMENT CHARGED!</strong> You've successfully reserved your founders pricing spot. You will only be charged when we launch in Q1 2025. You'll receive early access 30 days before public launch.</p>
+        </div>
+
+        <div style="margin: 30px 0;" id="actionButtons">
+            <a href="#" class="btn" onclick="accessCRM()">Access Your CRM Dashboard</a>
+            <a href="https://nxtrix.netlify.app" class="btn secondary">Back to Home</a>
+        </div>
+
+        <div class="next-steps" id="nextSteps">
+            <h3>🚀 Next Steps:</h3>
+            <ul>
+                <li>Check your email for your welcome message and setup guide</li>
+                <li>Complete your profile setup in the CRM dashboard</li>
+                <li>Import your first leads or create new ones</li>
+                <li>Explore the AI deal analysis features</li>
+                <li>Set up your first automation workflow</li>
+                <li>Schedule a demo call if you have questions</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+        const type = urlParams.get('type');
+        const tier = urlParams.get('tier');
+        const billing = urlParams.get('billing');
+
+        // Handle different success types
+        if (type === 'founders') {
+            // Founders pre-order success
+            document.getElementById('successTitle').textContent = 'Founders Spot Reserved!';
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('trialInfo').style.display = 'none';
+            document.getElementById('foundersInfo').style.display = 'block';
+            
+            // Update action buttons for founders (NO CRM ACCESS)
+            document.getElementById('actionButtons').innerHTML = `
+                <a href="https://nxtrix.netlify.app" class="btn">Back to Home</a>
+                <a href="mailto:support@nxtrix.com" class="btn secondary">Contact Support</a>
+            `;
+            
+            // Update next steps for founders
+            document.getElementById('nextSteps').innerHTML = `
+                <h3>🚀 What Happens Next:</h3>
+                <ul>
+                    <li>You'll receive a confirmation email within 5 minutes</li>
+                    <li>We'll send you exclusive updates during development</li>
+                    <li>You'll get early access 30 days before public launch (Q1 2025)</li>
+                    <li>Your founders pricing (${tier} ${billing}) is locked in forever</li>
+                    <li>You'll receive setup assistance when we launch</li>
+                    <li>Join our founders Slack community (invite coming soon)</li>
+                    <li><strong>NO PAYMENT CHARGED - You reserved your spot for free!</strong></li>
+                </ul>
+            `;
+        } else {
+            // Regular CRM subscription success
+            document.getElementById('nextSteps').innerHTML = `
+                <h3>🚀 Next Steps:</h3>
+                <ul>
+                    <li>Check your email for your welcome message and setup guide</li>
+                    <li>Complete your profile setup in the CRM dashboard</li>
+                    <li>Import your first leads or create new ones</li>
+                    <li>Explore the AI deal analysis features</li>
+                    <li>Set up your first automation workflow</li>
+                    <li>Schedule a demo call if you have questions</li>
+                </ul>
+            `;
+        }
+
+        function accessCRM() {
+            // Redirect to CRM dashboard using config
+            window.location.href = window.NXTRIX_CONFIG.getCrmUrl();
+        }
+
+        // Send session details to backend for processing
+        if (sessionId) {
+            console.log('Checkout Session ID:', sessionId);
+            console.log('Success Type:', type);
+            
+            // Save customer data to database
+            saveCustomerData(sessionId, type);
+        }
+
+        async function saveCustomerData(sessionId, type) {
+            try {
+                console.log('Saving customer data to database...');
+                
+                const response = await fetch(window.NXTRIX_CONFIG.getApiUrl('/payment-success'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        session_id: sessionId,
+                        type: type || 'subscription'
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('✅ Customer data saved successfully:', result);
+                } else {
+                    const error = await response.json();
+                    console.error('❌ Failed to save customer data:', error);
+                }
+            } catch (error) {
+                console.error('❌ Error saving customer data:', error);
+            }
+        }
+    </script>
+</body>
+</html>

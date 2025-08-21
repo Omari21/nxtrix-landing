@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to NXTRIX CRM • Account Created Successfully</title>
+  <meta name="description" content="Welcome to NXTRIX CRM! Your account has been created. Access your dashboard and start your real estate investment journey.">
+  
+  <style>
+    :root{
+      --bg:#0b0d12; --surface:#1a1b23; --border:rgba(255,255,255,.08); --text:#e5e7eb; --muted:#9ca3af; --brand:#7c5cff; --brand-2:#24d1ff; --accent:#10b981; --warning:#f59e0b; --error:#ef4444;
+    }
+    *{box-sizing:border-box; margin:0; padding:0}
+    body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif; background:var(--bg); color:var(--text); line-height:1.6; overflow-x:hidden}
+    .container{max-width:800px; margin:0 auto; padding:0 20px}
+    h1,h2,h3{font-weight:700; line-height:1.2; margin-bottom:12px}
+    h1{font-size:2.5rem; background:linear-gradient(135deg,var(--brand),var(--brand-2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text}
+    h2{font-size:2rem; color:var(--text)}
+    p{margin-bottom:16px; color:var(--muted)}
+    
+    /* Header */
+    header{padding:20px 0; border-bottom:1px solid var(--border)}
+    nav{display:flex; justify-content:space-between; align-items:center}
+    .logo{font-size:1.5rem; font-weight:800; background:linear-gradient(135deg,var(--brand),var(--brand-2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text}
+    
+    /* Main Content */
+    main{padding:80px 0; text-align:center}
+    .success-icon{font-size:4rem; margin-bottom:32px}
+    .welcome-card{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:40px; margin:40px auto; max-width:600px}
+    .steps{text-align:left; margin:40px 0}
+    .step{display:flex; align-items:flex-start; gap:16px; margin-bottom:24px; padding:20px; background:rgba(124,92,255,0.05); border-radius:12px; border-left:4px solid var(--brand)}
+    .step-number{background:var(--brand); color:white; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0}
+    .step-content h3{color:var(--text); margin-bottom:8px}
+    .step-content p{margin:0; color:var(--muted)}
+    
+    /* Buttons */
+    .btn{padding:16px 32px; border:none; border-radius:8px; font-weight:600; cursor:pointer; transition:all 0.2s; text-decoration:none; display:inline-block; text-align:center; margin:8px}
+    .btn.primary{background:linear-gradient(135deg,var(--brand),var(--brand-2)); color:white}
+    .btn.primary:hover{transform:translateY(-2px); box-shadow:0 8px 25px rgba(124,92,255,0.4)}
+    .btn.secondary{background:var(--surface); color:var(--text); border:2px solid var(--border)}
+    .btn.secondary:hover{border-color:var(--brand); background:rgba(124,92,255,0.1)}
+    
+    /* Info boxes */
+    .info-box{background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:12px; padding:20px; margin:24px 0}
+    .info-box h4{color:var(--accent); margin-bottom:8px}
+    
+    @media (max-width: 768px) {
+      h1{font-size:2rem}
+      main{padding:40px 0}
+      .welcome-card{padding:24px; margin:24px 16px}
+      .step{flex-direction:column; text-align:center}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">NXTRIX</div>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="success-icon">🎉</div>
+      <h1>Welcome to NXTRIX CRM!</h1>
+      <p style="font-size:1.2rem; color:var(--text)">Your account has been created successfully</p>
+
+      <div class="welcome-card">
+        <h2>What happens next?</h2>
+        
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>Check Your Email</h3>
+              <p>We've sent you a confirmation email with your account details and next steps.</p>
+            </div>
+          </div>
+          
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>Access Your Dashboard</h3>
+              <p>Click the button below to access your NXTRIX CRM dashboard and start exploring features.</p>
+            </div>
+          </div>
+          
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>Start Your 7-Day Free Trial</h3>
+              <p>Explore all features risk-free. No charges until your trial period ends.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-box">
+          <h4>🔐 Your Trial Includes:</h4>
+          <p>Full access to your selected plan features • No setup fees • Cancel anytime • Email support</p>
+        </div>
+
+        <div style="margin-top:40px">
+          <a href="http://localhost:8501" class="btn primary">Access Your Dashboard</a>
+          <a href="index.html" class="btn secondary">Back to Home</a>
+        </div>
+      </div>
+
+      <div style="margin-top:60px; color:var(--muted); font-size:0.9rem">
+        <p>Need help getting started? Contact us at <a href="mailto:support@nxtrix.com" style="color:var(--brand)">support@nxtrix.com</a></p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Auto-redirect to dashboard after 30 seconds (optional)
+    setTimeout(() => {
+      if (confirm('Ready to access your dashboard? Click OK to continue or Cancel to stay on this page.')) {
+        window.location.href = 'http://localhost:8501';
+      }
+    }, 30000);
+  </script>
+</body>
+</html>
