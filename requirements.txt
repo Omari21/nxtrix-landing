@@ -1,0 +1,4 @@
+flask==2.3.3
+stripe==5.5.0
+supabase==1.0.4
+python-dotenv==1.0.0
