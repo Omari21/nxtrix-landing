@@ -1156,7 +1156,7 @@
         }
         
         // Step 1: Save to Supabase via Netlify Functions
-        const response = await fetch(CONFIG.getApiUrl('/founders_signup'), {
+        const response = await fetch(CONFIG.getApiUrl('/signup_fresh'), {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
@@ -1343,4 +1343,5 @@
     }
   </script>
 </body>
+
 </html>
