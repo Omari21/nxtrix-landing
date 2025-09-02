@@ -1,0 +1,55 @@
+# NXTRIX CRM - Production Dependencies
+# Core Streamlit Framework
+streamlit==1.40.0
+streamlit-authenticator==0.2.3
+
+# Database & Backend
+supabase==2.3.4
+psycopg2-binary==2.9.9
+
+# Payment Processing
+stripe==8.5.0
+
+# Professional API Services
+twilio==8.13.0
+sendgrid==6.11.0
+openai==1.12.0
+
+# Data Processing
+pandas==2.2.0
+numpy==1.26.3
+
+# Visualization & Charts
+plotly==5.18.0
+matplotlib==3.8.2
+
+# HTTP Requests & Utils
+requests==2.31.0
+httpx==0.26.0
+
+# Date & Time
+python-dateutil==2.8.2
+
+# Email & Communications
+email-validator==2.1.0
+
+# File Processing
+Pillow==10.2.0
+
+# Environment Management
+python-dotenv==1.0.0
+
+# Logging & Monitoring
+loguru==0.7.2
+
+# Web Framework (for API endpoints)
+flask==2.3.3
+flask-cors==4.0.0
+fastapi==0.108.0
+uvicorn==0.25.0
+gunicorn==21.2.0
+
+# Additional Utils
+pydantic==2.5.3
+typing-extensions==4.9.0
+watchdog==4.0.0
