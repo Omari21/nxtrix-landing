@@ -1,13 +1,9 @@
-# NXTRIX CRM - Minimal Streamlit Cloud Dependencies
-streamlit
-supabase
-stripe
-twilio
-sendgrid
-openai
-pandas
-plotly
-requests
+# NXTRIX CRM - Streamlit Cloud Dependencies
+streamlit==1.28.1
+supabase==1.0.4
+pandas==2.0.3
+plotly==5.17.0
+python-dotenv==1.0.0
 python-dateutil
 Pillow
 python-dotenv
