@@ -1,0 +1,14 @@
+[streamlit]
+# Streamlit Cloud deployment configuration
+
+# Python runtime
+python_version = "3.9"
+
+# Dependencies
+requirements_file = "requirements.txt"
+
+# Application
+main_module = "app.py"
+
+# Build settings
+enable_static_serving = true

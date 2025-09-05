@@ -1,0 +1,28 @@
+{
+  "name": "NXTRIX CRM",
+  "description": "AI-Powered Real Estate Investment CRM - Streamlit Application",
+  "repository": "https://github.com/Omari21/nxtrix-landing",
+  "keywords": ["streamlit", "python", "crm", "real-estate"],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "env": {
+    "PYTHON_VERSION": {
+      "description": "Python runtime version",
+      "value": "3.9"
+    },
+    "STREAMLIT_SERVER_PORT": {
+      "description": "Port for Streamlit server",
+      "value": "8501"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "stack": "heroku-22"
+}
