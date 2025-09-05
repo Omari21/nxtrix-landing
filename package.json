@@ -1,0 +1,17 @@
+{
+  "name": "nxtrix-landing",
+  "version": "1.0.0",
+  "description": "NXTRIX Landing Page with Netlify Functions - JavaScript Only",
+  "main": "index.html",
+  "engines": {
+    "node": "18.x"
+  },
+  "dependencies": {
+    "stripe": "^14.0.0",
+    "@supabase/supabase-js": "^2.38.0"
+  },
+  "scripts": {
+    "build": "echo 'JavaScript build complete - no Python dependencies'"
+  },
+  "private": true
+}
