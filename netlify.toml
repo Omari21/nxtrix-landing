@@ -4,7 +4,7 @@
   functions = "./functions"
   publish = "."
   command = "npm install --production --ignore-engines && echo 'JavaScript-only build complete'"
-  ignore = "requirements.txt,streamlit-deps.txt,*.py"
+  ignore = "requirements.txt,streamlit-deps.txt,*.py,.streamlit/,streamlit.toml,runtime.txt,app.json,.buildpacks,.streamlitignore"
   
 [build.environment]
   # Environment variables - JavaScript/Node.js only

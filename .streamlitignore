@@ -1,0 +1,9 @@
+# Hide landing page files from Streamlit Cloud deployment
+netlify.toml
+package.json
+*.html
+manifest.json
+sw.js
+config.js
+functions/
+.netlifyignore
