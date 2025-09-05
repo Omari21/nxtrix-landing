@@ -1,0 +1,45 @@
+# Netlify Ignore - Don't build these files
+# Python CRM files should not be built by Netlify
+
+# Python dependencies file (this causes Netlify to try building Python)
+requirements.txt
+
+# Python files and directories
+*.py
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# CRM application directories
+pages/
+services/
+railway-deploy/
+
+# Documentation that doesn't need to be in web build
+STEP_*.md
+COMPLETE_*.md
+CRITICAL_*.md
+DEPLOYMENT_*.md
+STRIPE_*.md
+WHITE_*.md
+LANDING_*.md
+NETLIFY_*.md
+
+# Database files
+*.sql
+*.db
+*.sqlite
+
+# Environment files (should use Netlify dashboard)
+.env
+.env.local
+.env.production
+
+# Large files
+demos/
+backup/
+
+# VS Code
+.vscode/
+*.code-workspace
