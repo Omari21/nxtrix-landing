@@ -3,7 +3,8 @@
   # Functions for API endpoints
   functions = "./functions"
   publish = "."
-  command = "echo 'Build complete - JavaScript functions ready'"
+  command = "npm install"
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':!*.py' ':!pages/' ':!services/' ':!*.md'"
   
 [build.environment]
   # Environment variables can be set in Netlify dashboard
