@@ -404,11 +404,13 @@ def show_dashboard():
         return
     
     # Dashboard Header with Branding
-    st.markdown("""
+    user_name = user_info.get("full_name", user_info.get("email", "User").split("@")[0].title())
+    st.markdown(f"""
     <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
                padding: 2rem; border-radius: 15px; margin-bottom: 2rem; text-align: center;">
-        <h1 style="color: white; margin: 0; font-size: 2.5rem;">🏠 NxTrix CRM Dashboard</h1>
-        <p style="color: rgba(255,255,255,0.9); margin: 0.5rem 0 0 0; font-size: 1.2rem;">
+        <h1 style="color: white; margin: 0; font-size: 2.5rem;">👋 Welcome back, {user_name}!</h1>
+        <h2 style="color: rgba(255,255,255,0.9); margin: 0.5rem 0; font-size: 1.8rem;">🏠 NxTrix CRM Dashboard</h2>
+        <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 1.1rem;">
             AI-Powered Real Estate Investment Management
         </p>
         <div style="background: rgba(34, 197, 94, 0.2); border: 2px solid #22c55e; 
@@ -723,51 +725,6 @@ def show_dashboard():
         else:
             st.info("No buyer leads yet. Add your first investor!")
     
-    # === MARKET INTELLIGENCE SECTION ===
-    st.markdown("## 🌍 Real-Time Market Intelligence")
-    
-    col_market1, col_market2 = st.columns(2)
-    
-    with col_market1:
-        current_time = datetime.now().strftime("%I:%M %p")
-        st.markdown(f"""
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 1rem; border-radius: 8px;">
-            <h4 style="margin: 0 0 1rem 0;">📈 Today's Market Snapshot</h4>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span><strong>Market Activity:</strong></span>
-                <span style="color: #059669;">🟢 High ({current_time})</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span><strong>Investor Demand:</strong></span>
-                <span style="color: #dc2626;">🔴 Critical</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span><strong>Deal Flow:</strong></span>
-                <span style="color: #f59e0b;">🟡 Moderate</span>
-            </div>
-            <div style="border-top: 1px solid #e2e8f0; padding-top: 0.5rem; margin-top: 0.5rem;">
-                <small style="color: #6b7280;">📊 Updated every 15 minutes</small>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col_market2:
-        deal_alerts = 3 + (len(seller_leads) % 5)
-        hot_deals = max(1, deal_alerts // 2)
-        
-        st.markdown(f"""
-        <div style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; 
-                   padding: 1rem; border-radius: 8px; text-align: center;">
-            <h3 style="margin: 0 0 0.5rem 0;">🚨 {deal_alerts} New Opportunities</h3>
-            <p style="margin: 0; font-size: 1.1rem;">{hot_deals} marked as "HOT DEALS"</p>
-            <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">AI confidence 85%+</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        if st.button("🔍 View Hot Deals", use_container_width=True, type="primary"):
-            st.session_state["show_hot_deals"] = True
-            st.rerun()
-    
     # === FULL FEATURES SHOWCASE ===
     if data["total_leads"] == 0:
         st.markdown("""
@@ -831,19 +788,6 @@ def show_dashboard():
                 </ul>
             </div>
             """, unsafe_allow_html=True)
-        
-        st.markdown("""
-        <div style="background: #f0f9ff; border: 2px dashed #3b82f6; padding: 2rem; 
-                   border-radius: 10px; text-align: center; margin-top: 2rem;">
-            <h3 style="color: #1e40af; margin: 0 0 1rem 0;">🚀 Welcome to NxTrix CRM!</h3>
-            <p style="color: #1e40af; margin: 0 0 1rem 0;">
-                Start by adding your first leads to see the power of AI-driven real estate investing.
-            </p>
-            <p style="color: #1e40af; margin: 0; font-size: 0.9rem;">
-                Use the sidebar navigation to add seller properties and buyer investors.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
     else:
         st.success(f"🎉 **Dashboard Active**: Managing {data['total_leads']} leads with NxTrix's AI-powered system!")
 
