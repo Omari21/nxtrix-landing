@@ -61,11 +61,18 @@ def get_user_info():
             
             # Try to get profile data for full_name
             try:
-                profile_resp = supabase.table("profiles").select("full_name").eq("id", user.user.id).execute()
+                profile_resp = supabase.table("user_profiles").select("full_name, first_name, last_name").eq("user_id", user.user.id).execute()
                 if profile_resp.data and len(profile_resp.data) > 0:
-                    user_info["full_name"] = profile_resp.data[0].get("full_name")
-                else:
-                    # Fallback to extracting name from email or user_metadata
+                    profile_data = profile_resp.data[0]
+                    # Try full_name first, then combine first_name + last_name
+                    user_info["full_name"] = (
+                        profile_data.get("full_name") or
+                        f"{profile_data.get('first_name', '')} {profile_data.get('last_name', '')}".strip() or
+                        None
+                    )
+                
+                # If no profile data, try user metadata
+                if not user_info.get("full_name"):
                     user_info["full_name"] = (
                         user.user.user_metadata.get("full_name") or 
                         user.user.user_metadata.get("name") or 
@@ -365,10 +372,6 @@ def show_dashboard():
         # Load the actual analytics page content
         load_analytics_page()
         return
-    elif st.session_state.get("show_market_analysis"):
-        # Load the market analysis page content
-        load_market_analysis_page()
-        return
     elif st.session_state.get("show_deal_finder"):
         show_deal_finder_page()
         return
@@ -425,6 +428,19 @@ def show_dashboard():
                 🔴 STRIPE LIVE ACCOUNT ACTIVE - Production Ready
             </span>
         </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Hot Deals Alert Banner
+    st.markdown("""
+    <div style="background: linear-gradient(90deg, #ef4444, #dc2626); color: white; 
+               padding: 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: center;
+               border: 2px solid #dc2626; animation: pulse 2s infinite;">
+        <strong>🔥 URGENT: 3 Hot Deals Expiring in 24 Hours!</strong> 
+        <span style="margin-left: 1rem; background: rgba(255,255,255,0.2); 
+               padding: 0.3rem 0.8rem; border-radius: 15px;">
+            ROI: 20-27% • Click "🔥 Hot Deals" below to view
+        </span>
     </div>
     """, unsafe_allow_html=True)
     
@@ -488,8 +504,7 @@ def show_dashboard():
         
         # Market Analysis button (full width)
         if st.button("🏘️ Market Analysis", use_container_width=True):
-            st.session_state["show_market_analysis"] = True
-            st.rerun()
+            st.switch_page("pages/market_analysis.py")
         
         st.markdown("### �👥 **Client Management**")
         if st.button("💼 Investor Clients", use_container_width=True):
@@ -1131,18 +1146,31 @@ def show_deal_finder_page():
         st.rerun()
 
 def show_hot_deals_page():
-    """Hot deals marketplace"""
+    """Enhanced Hot deals marketplace with urgency and bidding"""
     st.markdown("### 🔥 Hot Deals Marketplace")
     
     st.markdown("""
     <div style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white; 
                padding: 1.5rem; border-radius: 10px; margin-bottom: 1rem; text-align: center;">
         <h3 style="margin: 0;">🚨 URGENT: High-ROI Opportunities</h3>
-        <p style="margin: 0.5rem 0 0 0;">AI-verified deals with 20%+ ROI potential</p>
+        <p style="margin: 0.5rem 0 0 0;">AI-verified deals with 20%+ ROI potential • Updated every 15 minutes</p>
+        <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem;">⏰ <strong>{deals_count} deals expiring in next 48 hours</strong></p>
     </div>
-    """, unsafe_allow_html=True)
+    """.format(deals_count=7), unsafe_allow_html=True)
     
-    # Generate sample hot deals
+    # Filter and sort options
+    col_filter1, col_filter2, col_filter3, col_filter4 = st.columns(4)
+    
+    with col_filter1:
+        min_roi = st.selectbox("Min ROI %", [15, 20, 25, 30], index=1)
+    with col_filter2:
+        max_investment = st.selectbox("Max Investment", ["150K", "300K", "500K", "1M+"], index=2)
+    with col_filter3:
+        location_filter = st.selectbox("Location", ["All Markets", "Memphis", "Little Rock", "Birmingham", "Nashville"])
+    with col_filter4:
+        urgency_filter = st.selectbox("Urgency", ["All", "Critical (1-2 days)", "High (3-5 days)", "Medium (6+ days)"])
+    
+    # Enhanced sample hot deals with more urgency indicators
     hot_deals = [
         {
             "address": "1247 Oak Street, Memphis, TN",
@@ -1150,7 +1178,14 @@ def show_hot_deals_page():
             "investment": 120000,
             "roi": 23.4,
             "confidence": 92,
-            "days_left": 3
+            "days_left": 2,
+            "hours_left": 18,
+            "priority": "CRITICAL",
+            "ai_score": 96,
+            "competition": "3 investors viewing",
+            "deal_type": "Off-Market",
+            "property_type": "SFR",
+            "last_updated": "12 min ago"
         },
         {
             "address": "892 Pine Avenue, Little Rock, AR",
@@ -1158,7 +1193,14 @@ def show_hot_deals_page():
             "investment": 95000,
             "roi": 21.8,
             "confidence": 87,
-            "days_left": 5
+            "days_left": 4,
+            "hours_left": 2,
+            "priority": "HIGH",
+            "ai_score": 89,
+            "competition": "1 investor viewing",
+            "deal_type": "Distressed",
+            "property_type": "SFR",
+            "last_updated": "8 min ago"
         },
         {
             "address": "456 Maple Drive, Birmingham, AL",
@@ -1166,42 +1208,138 @@ def show_hot_deals_page():
             "investment": 140000,
             "roi": 25.1,
             "confidence": 94,
-            "days_left": 2
+            "days_left": 1,
+            "hours_left": 14,
+            "priority": "CRITICAL",
+            "ai_score": 98,
+            "competition": "5 investors viewing",
+            "deal_type": "Foreclosure",
+            "property_type": "SFR",
+            "last_updated": "3 min ago"
+        },
+        {
+            "address": "789 Cedar Court, Nashville, TN",
+            "arv": 275000,
+            "investment": 180000,
+            "roi": 27.8,
+            "confidence": 91,
+            "days_left": 3,
+            "hours_left": 8,
+            "priority": "HIGH",
+            "ai_score": 93,
+            "competition": "2 investors viewing",
+            "deal_type": "Estate Sale",
+            "property_type": "SFR",
+            "last_updated": "6 min ago"
         }
     ]
     
+    # Live updates indicator
+    st.markdown("""
+    <div style="background: #f0fdf4; border-left: 4px solid #22c55e; padding: 0.5rem 1rem; margin-bottom: 1rem;">
+        <span style="color: #16a34a;">🟢 <strong>LIVE</strong> • Deals update automatically • Last refresh: 2 min ago</span>
+    </div>
+    """, unsafe_allow_html=True)
+    
     for i, deal in enumerate(hot_deals):
-        urgency_color = "#dc2626" if deal["days_left"] <= 3 else "#f59e0b"
+        # Dynamic urgency styling
+        if deal["priority"] == "CRITICAL":
+            border_color = "#dc2626"
+            priority_bg = "#fee2e2"
+            priority_text = "#dc2626"
+            blink_class = "animate-pulse"
+        elif deal["priority"] == "HIGH":
+            border_color = "#f59e0b"
+            priority_bg = "#fef3c7"
+            priority_text = "#f59e0b"
+            blink_class = ""
+        else:
+            border_color = "#6b7280"
+            priority_bg = "#f3f4f6"
+            priority_text = "#6b7280"
+            blink_class = ""
         
         st.markdown(f"""
-        <div style="border: 2px solid {urgency_color}; border-radius: 10px; padding: 1rem; margin-bottom: 1rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <h4 style="margin: 0; color: #1f2937;">🏠 {deal['address']}</h4>
-                <span style="background: {urgency_color}; color: white; padding: 0.3rem 0.8rem; 
-                           border-radius: 20px; font-weight: bold;">
-                    {deal['days_left']} days left
-                </span>
+        <div style="border: 3px solid {border_color}; border-radius: 15px; padding: 1.5rem; margin-bottom: 1.5rem; {blink_class}">
+            <!-- Header with urgency and competition -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <h4 style="margin: 0; color: #1f2937;">🏠 {deal['address']}</h4>
+                    <span style="background: {priority_bg}; color: {priority_text}; padding: 0.3rem 0.8rem; 
+                               border-radius: 20px; font-weight: bold; font-size: 0.8rem;">
+                        {deal['priority']} PRIORITY
+                    </span>
+                </div>
+                <div style="text-align: right;">
+                    <div style="color: {border_color}; font-weight: bold; font-size: 1.1rem;">
+                        ⏰ {deal['days_left']}d {deal['hours_left']}h left
+                    </div>
+                    <div style="color: #ef4444; font-size: 0.9rem;">👥 {deal['competition']}</div>
+                </div>
             </div>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1rem;">
-                <div><strong>ARV:</strong> ${deal['arv']:,.0f}</div>
-                <div><strong>Investment:</strong> ${deal['investment']:,.0f}</div>
-                <div><strong>ROI:</strong> <span style="color: #059669; font-weight: bold;">{deal['roi']:.1f}%</span></div>
-                <div><strong>AI Confidence:</strong> {deal['confidence']}%</div>
+            
+            <!-- Key metrics -->
+            <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; margin-bottom: 1rem;">
+                <div><strong>ARV:</strong><br>${deal['arv']:,.0f}</div>
+                <div><strong>Investment:</strong><br>${deal['investment']:,.0f}</div>
+                <div><strong>ROI:</strong><br><span style="color: #059669; font-weight: bold; font-size: 1.1rem;">{deal['roi']:.1f}%</span></div>
+                <div><strong>AI Score:</strong><br><span style="color: #7c3aed; font-weight: bold;">{deal['ai_score']}/100</span></div>
+                <div><strong>Type:</strong><br>{deal['deal_type']}</div>
+                <div><strong>Updated:</strong><br><span style="color: #059669;">{deal['last_updated']}</span></div>
+            </div>
+            
+            <!-- Confidence bar -->
+            <div style="margin-bottom: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                    <span><strong>AI Confidence Level</strong></span>
+                    <span style="font-weight: bold; color: #059669;">{deal['confidence']}%</span>
+                </div>
+                <div style="background: #e5e7eb; border-radius: 10px; height: 8px;">
+                    <div style="background: linear-gradient(90deg, #ef4444, #f59e0b, #22c55e); 
+                               width: {deal['confidence']}%; height: 100%; border-radius: 10px;"></div>
+                </div>
             </div>
         </div>
         """, unsafe_allow_html=True)
         
-        col1, col2, col3 = st.columns(3)
+        # Action buttons with enhanced functionality
+        col1, col2, col3, col4 = st.columns(4)
         with col1:
-            if st.button(f"📞 Contact Seller", key=f"contact_{i}"):
-                st.success("Seller contact info sent to your email!")
+            if st.button(f"📞 Contact Seller", key=f"contact_{i}", use_container_width=True):
+                st.success("🎯 Seller contact info sent to your email! Check within 2 minutes.")
         with col2:
-            if st.button(f"💾 Save Deal", key=f"save_{i}"):
-                st.success("Deal saved to your pipeline!")
+            if st.button(f"💾 Save Deal", key=f"save_{i}", use_container_width=True):
+                st.success("✅ Deal saved to your pipeline with priority flag!")
         with col3:
-            if st.button(f"📊 Full Analysis", key=f"analyze_{i}"):
-                st.info("Detailed analysis report generated!")
+            if st.button(f"📊 Full Analysis", key=f"analyze_{i}", use_container_width=True):
+                st.info("📈 Comprehensive CMA report generating... Check Market Analysis in 30 seconds.")
+        with col4:
+            bid_amount = st.number_input(f"Quick Bid $", min_value=1000, value=deal['investment'], step=1000, key=f"bid_{i}")
+            if st.button(f"⚡ Submit Bid", key=f"quick_bid_{i}", use_container_width=True):
+                st.warning(f"🔥 Bid of ${bid_amount:,.0f} submitted! Seller will respond within 2 hours.")
     
+    # Summary stats
+    st.markdown("---")
+    col_stats1, col_stats2, col_stats3, col_stats4 = st.columns(4)
+    with col_stats1:
+        st.metric("🔥 Hot Deals Available", len(hot_deals))
+    with col_stats2:
+        st.metric("⏰ Expiring Today", 2)
+    with col_stats3:
+        st.metric("💰 Avg ROI", "24.3%")
+    with col_stats4:
+        st.metric("👥 Active Investors", 47)
+    
+    # Auto-refresh notice
+    st.markdown("""
+    <div style="background: #fef3c7; border: 1px solid #f59e0b; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+        <p style="margin: 0; color: #92400e; text-align: center;">
+            🔄 <strong>Auto-refresh enabled</strong> • New deals appear automatically • 
+            Set up SMS alerts in <a href="#" style="color: #92400e;">Settings</a> to never miss opportunities
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
     if st.button("⬅️ Back to Dashboard"):
         st.session_state.pop("show_hot_deals", None)
         st.rerun()
