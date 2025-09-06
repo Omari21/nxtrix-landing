@@ -365,6 +365,10 @@ def show_dashboard():
         # Load the actual analytics page content
         load_analytics_page()
         return
+    elif st.session_state.get("show_market_analysis"):
+        # Load the market analysis page content
+        load_market_analysis_page()
+        return
     elif st.session_state.get("show_deal_finder"):
         show_deal_finder_page()
         return
@@ -476,9 +480,14 @@ def show_dashboard():
                 st.session_state["show_ai_tools"] = True
                 st.rerun()
         with nav_col4:
-            if st.button("� Analytics", use_container_width=True):
+            if st.button("📊 Analytics", use_container_width=True):
                 st.session_state["show_analytics"] = True
                 st.rerun()
+        
+        # Market Analysis button (full width)
+        if st.button("🏘️ Market Analysis", use_container_width=True):
+            st.session_state["show_market_analysis"] = True
+            st.rerun()
         
         st.markdown("### �👥 **Client Management**")
         if st.button("💼 Investor Clients", use_container_width=True):
@@ -571,35 +580,6 @@ def show_dashboard():
             )
         else:
             st.metric("Conversion Rate", "0%", help="Percentage of leads converted to contracts")
-    
-    with col_perf2:
-        # Performance metrics
-        if data["total_leads"] > 0:
-            deal_velocity = deals_in_contract / max(1, data["total_leads"]) * 100
-            your_performance = min(95, max(60, 75 + (deal_velocity / 2)))
-            industry_avg = 43.2
-            
-            st.markdown(f"""
-            <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; border: 1px solid #e2e8f0;">
-                <h4 style="margin: 0 0 1rem 0;">📊 Your Performance vs Industry</h4>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                    <span><strong>Your Score:</strong></span>
-                    <span style="color: #059669; font-weight: bold;">{your_performance:.1f}/100</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                    <span><strong>Industry Average:</strong></span>
-                    <span style="color: #6b7280;">{industry_avg}/100</span>
-                </div>
-                <div style="background: #e2e8f0; border-radius: 10px; height: 10px; margin: 0.5rem 0;">
-                    <div style="background: linear-gradient(90deg, #22c55e, #059669); border-radius: 10px; height: 100%; width: {your_performance}%;"></div>
-                </div>
-                <small style="color: #059669; font-weight: bold;">
-                    ⬆️ {your_performance - industry_avg:.1f} points above industry average
-                </small>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.info("Add leads to see performance comparison")
     
     # Quick Actions - Advanced Features
     st.markdown("### 🎯 Advanced AI-Powered Tools")
@@ -4788,6 +4768,25 @@ def load_analytics_page():
     if st.button("⬅️ Back to Dashboard"):
         st.session_state.pop("show_analytics", None)
         st.rerun()
+
+def load_market_analysis_page():
+    """Load the Comparative Market Analysis page content"""
+    try:
+        from pages.market_analysis import show_cma_page
+        show_cma_page()
+        if st.button("⬅️ Back to Dashboard"):
+            st.session_state.pop("show_market_analysis", None)
+            st.rerun()
+    except ImportError as e:
+        st.error("Market Analysis module not found. Please check your installation.")
+        if st.button("⬅️ Back to Dashboard"):
+            st.session_state.pop("show_market_analysis", None)
+            st.rerun()
+    except Exception as e:
+        st.error(f"Error loading Market Analysis: {str(e)}")
+        if st.button("⬅️ Back to Dashboard"):
+            st.session_state.pop("show_market_analysis", None)
+            st.rerun()
 
 def load_ai_tools_page():
     """Full AI Tools Hub functionality embedded"""
